@@ -14,4 +14,4 @@ stm32f1xx-hal = {version = "0.5.3", features = ["rt", "stm32f103", "medium"]}
 nb = "0.1.2"
 
 embedded-midi = "0.0.1"
-ad5668 = "0.0.1"
+ad5668 = "0.1.2"
