@@ -4,6 +4,7 @@
 #[allow(unused_imports)]
 use panic_semihosting;
 
+use ad5668::AD5668;
 use cortex_m_rt::entry;
 use embedded_midi::MidiIn;
 use nb::block;
@@ -11,6 +12,7 @@ use stm32f1xx_hal::{
     pac,
     prelude::*,
     serial::{Config, Serial},
+    spi::{Mode, NoMiso, Phase, Polarity, Spi},
 };
 
 #[entry]
@@ -44,6 +46,28 @@ fn main() -> ! {
     // Configure Midi
     let (mut tx, mut rx) = usart.split();
     let mut midi_in = MidiIn::new(rx);
+
+    // Configure the pins for SPI2
+    let mut gpiob = dp.GPIOB.split(&mut rcc.apb2);
+    let spi2_mosi = gpiob.pb15.into_alternate_push_pull(&mut gpiob.crh);
+    let spi2_sck = gpiob.pb13.into_alternate_push_pull(&mut gpiob.crh);
+    let spi2_cs = gpiob.pb12.into_push_pull_output(&mut gpiob.crh);
+
+    // Configure SPI
+    let spi_mode = Mode {
+        polarity: Polarity::IdleLow,
+        phase: Phase::CaptureOnFirstTransition,
+    };
+
+    let spi = Spi::spi2(
+        dp.SPI2,
+        (spi2_sck, NoMiso, spi2_mosi),
+        spi_mode,
+        100.khz(),
+        clocks,
+        &mut rcc.apb1,
+    );
+    let mut dac = AD5668::new(spi, spi2_cs);
 
     loop {
         let event = block!(midi_in.read());
