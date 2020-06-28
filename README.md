@@ -1,5 +1,5 @@
 # Midi-CV Firmware
-This project contains the firmware for the bluepill based Midi-CV converter board developed [here](github.com/mendelt/bluepill-midi-cv)
+This project contains the firmware for the bluepill based Midi-CV converter board developed [here](github.com/mendelt/midi-cv-hardware)
 
 ## License
 Licensed under either of
