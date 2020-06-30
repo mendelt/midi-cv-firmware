@@ -6,7 +6,7 @@ use panic_semihosting;
 
 use ad5668::AD5668;
 use cortex_m_rt::entry;
-use embedded_midi::MidiIn;
+use embedded_midi::{MidiEvent, MidiIn};
 use nb::block;
 use stm32f1xx_hal::{
     pac,
@@ -69,6 +69,17 @@ fn main() -> ! {
     let mut dac = AD5668::new(spi, spi2_cs);
 
     loop {
-        let event = block!(midi_in.read());
+        match block!(midi_in.read()) {
+            Ok(MidiEvent::NoteOn{channel, note, velocity}) => {
+                // set gate high
+                // set note cv
+                // set velocity cv
+            }
+            Ok(MidiEvent::NoteOff{channel, note, velocity}) => {
+                // set gate low
+            }
+            Ok(_) => {}
+            Err(_) => {}
+        }
     }
 }
