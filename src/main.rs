@@ -1,13 +1,11 @@
 #![no_main]
 #![no_std]
 
-#[allow(unused_imports)]
-use panic_semihosting;
-
 use ad5668::AD5668;
 use cortex_m_rt::entry;
-use embedded_midi::{MidiMessage, MidiIn};
+use embedded_midi::{MidiIn, MidiMessage};
 use nb::block;
+use panic_semihosting as _;
 use stm32f1xx_hal::{
     pac,
     prelude::*,
